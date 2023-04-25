@@ -12,6 +12,8 @@ const server = http.createServer((req, res) => {
   res.write("Hola");
   // Se termina la conexión
 	res.end();
+  // Apagando el server
+  process.exit();
 }); 
 
 // 3. Se pone a trabajar el servidor 
