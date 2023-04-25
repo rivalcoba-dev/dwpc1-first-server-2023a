@@ -1,6 +1,10 @@
 import http from "http";
+import path from "path";
+import { promises as fs } from 'fs';
 
-const server = http.createServer((req, res) => {
+global["__dirname"] = path.dirname(new URL(import.meta.url).pathname);
+
+const server = http.createServer(async (req, res) => {
   // Desestructurando de "req"
   let { url, method } = req;
 
@@ -16,7 +20,7 @@ const server = http.createServer((req, res) => {
       res.write(`
       <html>
         <head>
-          <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/fluency/256/domain.png">
+          <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
           <title>My App</title>
         </head>
         <body> 
@@ -40,14 +44,14 @@ const server = http.createServer((req, res) => {
       res.write(`
       <html>
         <head>
-          <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/fluency/256/domain.png">
+          <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
           <title>My App</title>
         </head>
-        <body> 
-          <h1 style="color: #333">&#9889; Author &#9889</h1>
-          <p style="color: #34495E">Ivan Rivalcoba Rivas - Web Developer</p>
+        <body style="text-align: center;">
+          <h1 style="color: #333;">&#9889; Author &#9889;</h1>
+          <p style="color: #34495E;">Ivan Rivalcoba Rivas - Web Developer</p>
           <div>
-           <img width="300px" src="${url_image}" alt="Foto Ivan Rivalcoba">
+            <img width="300px" src="https://media.istockphoto.com/id/180841365/photo/hes-a-handsome-man.jpg?s=612x612&w=0&k=20&c=vjQLLI8g_a0O6_xx0plUu3CJ9AMhnSzHssLwgem8gE4=" alt="Foto Ivan Rivalcoba">
           </div>
         </body>
       </html>
@@ -58,6 +62,39 @@ const server = http.createServer((req, res) => {
       // Cerrando la comunicacion
       res.end();
       break;
+    case "/favicon.ico":
+      // Especificar la ubicación del archivo de icono
+      const faviconPath = path.join(__dirname, 'favicon.ico');
+      try{
+        const data = await fs.readFile(faviconPath);
+        res.writeHead(200, {'Content-Type': 'image/x-icon'});
+        res.end(data);
+      }catch (err) {
+        console.error(err);
+        // Peticion raiz
+        // Estableciendo cabeceras
+        res.setHeader('Content-Type', 'text/html');
+        // Escribiendo la respuesta
+        res.write(`
+        <html>
+          <head>
+            <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
+            <title>My App</title>
+          </head>
+          <body> 
+            <h1>&#128534; 500 El server esta fuera de servicio</h1>
+            <p>Lo sentimos pero hubo un error en nuestro server...</p>
+            <p> ${err.message}</p>
+          </body>
+        </html>
+        `);
+        console.log(`📣 Respondiendo: 500 ${req.url} ${req.method}`);
+        // Estableciendo codigo de respuesta
+        res.statusCode = 500;
+        // Cerrando la comunicacion
+        res.end();
+      }
+      break
     default:
       // Peticion raiz
       // Estableciendo cabeceras
@@ -66,7 +103,7 @@ const server = http.createServer((req, res) => {
       res.write(`
       <html>
         <head>
-          <link rel="icon" type="image/png" sizes="32x32" href="https://img.icons8.com/fluency/256/domain.png">
+          <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
           <title>My App</title>
         </head>
         <body> 
