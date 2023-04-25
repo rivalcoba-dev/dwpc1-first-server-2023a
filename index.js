@@ -7,13 +7,18 @@ import http from "http";
 // (request, response) 
 
 const server = http.createServer((req, res) => {
-  console.log("> Se ha recibido una petición."); 
-  // Respondemos 
-  res.write("Hola");
-  // Se termina la conexión
-	res.end();
-  // Apagando el server
-  process.exit();
+  console.log(`📣 url: ${req.url}`);
+  console.log(`📣 method: ${req.method}`);
+  // Estableciendo cabeceras
+  res.setHeader('Content-Type', 'text/html');
+  // Escribiendo la respuesta
+  res.write('<html>');
+  res.write('<head> <title>My App</title></head>');
+  res.write('<body> <h1>Hello from my server</h1></body>');
+  res.write('</html>');
+  // Cerrando la comunicacion
+  res.end();
+
 }); 
 
 // 3. Se pone a trabajar el servidor 
