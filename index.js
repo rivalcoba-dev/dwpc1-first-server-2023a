@@ -105,6 +105,7 @@ const server = http.createServer(async (req, res) => {
         res.statusCode = 404;
         res.write("404: Endpoint no encontrado")
       }
+      res.end();
       break;
       // Continua con el defautl
     default:
