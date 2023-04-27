@@ -23,7 +23,8 @@
 				"ms-vscode.live-server",
 				"meganrogge.template-string-converter",
 				"eamodio.gitlens",
-				"xabikos.JavaScriptSnippets"
+				"xabikos.JavaScriptSnippets",
+				"rangav.vscode-thunder-client"
 			]
 		}
 	}

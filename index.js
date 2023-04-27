@@ -65,11 +65,11 @@ const server = http.createServer(async (req, res) => {
     case "/favicon.ico":
       // Especificar la ubicación del archivo de icono
       const faviconPath = path.join(__dirname, 'favicon.ico');
-      try{
+      try {
         const data = await fs.readFile(faviconPath);
-        res.writeHead(200, {'Content-Type': 'image/x-icon'});
+        res.writeHead(200, { 'Content-Type': 'image/x-icon' });
         res.end(data);
-      }catch (err) {
+      } catch (err) {
         console.error(err);
         // Peticion raiz
         // Estableciendo cabeceras
@@ -94,7 +94,19 @@ const server = http.createServer(async (req, res) => {
         // Cerrando la comunicacion
         res.end();
       }
-      break
+      break;
+    case "/message":
+      // Verificando si es post
+      if (method === "POST") {
+        // Procesa el formulario
+        res.statusCode = 200;
+        res.write("🎉 Endpoint Funcionando!!! 🎉");
+      } else {
+        res.statusCode = 404;
+        res.write("404: Endpoint no encontrado")
+      }
+      break;
+      // Continua con el defautl
     default:
       // Peticion raiz
       // Estableciendo cabeceras
