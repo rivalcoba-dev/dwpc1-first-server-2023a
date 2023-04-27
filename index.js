@@ -98,14 +98,40 @@ const server = http.createServer(async (req, res) => {
     case "/message":
       // Verificando si es post
       if (method === "POST") {
-        // Procesa el formulario
-        res.statusCode = 200;
-        res.write("🎉 Endpoint Funcionando!!! 🎉");
+        let body = "";
+
+        req.on("data", (data => {
+          body += data;
+          if (body.length > 1e6) return req.socket.destroy();
+        }));
+
+        req.on("end", () => {
+          // Procesa el formulario
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "text/html");
+          const params = new URLSearchParams(body); 
+          const parsedParams = Object.fromEntries(params);
+          console.log(parsedParams);
+          res.write(`
+          <html>
+            <head>
+              <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
+              <title>My App</title>
+            </head>
+            <body> 
+              <h1 style="color: #333">SERVER MESSAGE RECIEVED &#128172</h1>
+              <p>${parsedParams.message}</p>
+            </body>
+          </html>
+          `);
+          
+          return res.end();
+        })
       } else {
         res.statusCode = 404;
         res.write("404: Endpoint no encontrado")
+        res.end();
       }
-      res.end();
       break;
       // Continua con el defautl
     default:
