@@ -98,20 +98,27 @@ const server = http.createServer(async (req, res) => {
     case "/message":
       // Verificando si es post
       if (method === "POST") {
+        // Se crea una variable para almacenar los
+		    // Datos entrantes del cliente
         let body = "";
-
+        // Se registra un manejador de eventos
+        // Para la recepción de datos
         req.on("data", (data => {
           body += data;
           if (body.length > 1e6) return req.socket.destroy();
         }));
-
+        // Se registra una manejador de eventos
+		    // para el termino de recepción de datos
         req.on("end", () => {
           // Procesa el formulario
           res.statusCode = 200;
           res.setHeader("Content-Type", "text/html");
-          const params = new URLSearchParams(body); 
+          // Mediante URLSearchParams se extraen
+			    // los campos del formulario
+          const params = new URLSearchParams(body);
+          // Se construye un objeto a partir de los datos
+			    // en la variable params
           const parsedParams = Object.fromEntries(params);
-          console.log(parsedParams);
           res.write(`
           <html>
             <head>
@@ -124,7 +131,7 @@ const server = http.createServer(async (req, res) => {
             </body>
           </html>
           `);
-          
+          // Se finaliza la conexion
           return res.end();
         })
       } else {
