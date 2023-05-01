@@ -1,3 +1,6 @@
+# ignorando message
+message.txt
+
 # Logs
 logs
 *.log
