@@ -8,7 +8,8 @@
     "node": "18.14"
   },
   "scripts": {
-    "start": "node ./"
+    "start": "node ./",
+    "dev": "nodemon ./"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/rivalcoba-dev/dwpc1-first-server-2023a/issues"
   },
-  "homepage": "https://github.com/rivalcoba-dev/dwpc1-first-server-2023a#readme"
+  "homepage": "https://github.com/rivalcoba-dev/dwpc1-first-server-2023a#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
