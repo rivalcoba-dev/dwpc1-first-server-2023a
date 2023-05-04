@@ -53,7 +53,7 @@ export default async (req, res) => {
       const faviconPath = path.join(__dirname, 'favicon.ico');
       let data;
       try {
-        data = await fs.readFile(faviconPath+"s");
+        data = await fs.readFile(faviconPath);
       } catch (err) {
         return error500(err, serveView, view);
       }
