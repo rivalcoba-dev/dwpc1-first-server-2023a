@@ -1,139 +1,64 @@
 import path from "path";
 import { promises as fs } from 'fs';
+import viewLoader from "./helpers/viewLoader.js";
+import ViewServer from './helpers/viewsServer.js'
 
 global["__dirname"] = path.dirname(new URL(import.meta.url).pathname);
 
-const requestHandler = async (req, res) => {
+const viewPath = path.join(__dirname, 'views');
+
+// Creando un Mapa con los nombres
+// de las rutas asociados a sus archivos
+let views = await viewLoader(viewPath);
+
+// Funciones Auxiliares
+function error500(err, serveView, view) {
+  console.log(`🔥 Respondiendo: 500`);
+  console.log(`🔥 Error: 500 ${err.message}`);
+  console.error(err);
+  // Obteniendo la vista
+  view = views['500.html'];
+  // Sirviendo la vista
+  serveView(view, 500);
+}
+
+export default async (req, res) => {
   // Desestructurando de "req"
   let { url, method } = req;
+  // Creando un servidor de imagenes
+  let serveView = ViewServer(req, res);
+  let view = views['index.html'];
+
   console.log(`📣 CLIENT-REQUEST: ${req.url} ${req.method}`);
 
   // Enrutando peticiones
   switch (url) {
     case '/':
-      // Peticion raiz
-      // Estableciendo cabeceras
-      res.setHeader('Content-Type', 'text/html');
+      // GET "/""
       // Escribiendo la respuesta
-      res.write(`
-      <html>
-        <head>
-          <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
-          <title>My App</title>
-          <style>
-            body {
-              background-color: #ECF0F1;
-              font-family: Arial, sans-serif;
-            }
-            h1, h2 {
-              color: #3498DB;
-              text-align: center;
-              margin-top: 50px;
-            }
-            form {
-              margin-top: 30px;
-              text-align: center;
-            }
-            input[type="text"] {
-              width: 300px;
-              padding: 10px;
-              border: none;
-              border-radius: 5px;
-              box-shadow: 0px 0px 5px #3498DB;
-              outline: none;
-            }
-            button[type="submit"] {
-              background-color: #3498DB;
-              color: #fff;
-              border: none;
-              border-radius: 5px;
-              padding: 10px 20px;
-              cursor: pointer;
-              box-shadow: 0px 0px 5px #3498DB;
-              outline: none;
-            }
-            button[type="submit"]:hover {
-              background-color: #2980B9;
-            }
-          </style>
-        </head>
-        <body> 
-          <h1>Hello from my server</h1>
-          <h2>Ingresa un mensaje</h2>
-          <div>
-            <form action="/message" method="POST">
-              <input type="text" name="message">
-              <button type="submit">Send</button>
-            </form>
-          </div>
-        </body>
-      </html>
-      `);
-      console.log(`📣 Respondiendo: 200 ${req.url} ${req.method}`);
-      // Estableciendo codigo de respuesta
-      res.statusCode = 200;
-      // Cerrando la comunicacion
-      res.end();
+      console.log(`📣 Respondiendo: ${req.method} ${req.url}`);
+      // Sirviendo la vista por defecto
+      serveView(view);
       break;
     case '/author':
-      // Peticion raiz
-      // Estableciendo cabeceras
-      res.setHeader('Content-Type', 'text/html');
-      let url_image = 'https://media.istockphoto.com/id/180841365/photo/hes-a-handsome-man.jpg?s=612x612&w=0&k=20&c=vjQLLI8g_a0O6_xx0plUu3CJ9AMhnSzHssLwgem8gE4=';
-      // Escribiendo la respuesta
-      res.write(`
-      <html>
-        <head>
-          <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
-          <title>My App</title>
-        </head>
-        <body style="text-align: center;">
-          <h1 style="color: #333;">&#9889; Author &#9889;</h1>
-          <p style="color: #34495E;">Ivan Rivalcoba Rivas - Web Developer</p>
-          <div>
-            <img width="300px" src="https://media.istockphoto.com/id/180841365/photo/hes-a-handsome-man.jpg?s=612x612&w=0&k=20&c=vjQLLI8g_a0O6_xx0plUu3CJ9AMhnSzHssLwgem8gE4=" alt="Foto Ivan Rivalcoba">
-          </div>
-        </body>
-      </html>
-      `);
+      // GET /author
       console.log(`📣 Respondiendo: 200 ${req.url} ${req.method}`);
-      // Estableciendo codigo de respuesta
-      res.statusCode = 200;
-      // Cerrando la comunicacion
-      res.end();
+      // Obteniendo la vista
+      view = views['author.html'];
+      // Sirviendo la vista
+      serveView(view);
       break;
     case "/favicon.ico":
       // Especificar la ubicación del archivo de icono
       const faviconPath = path.join(__dirname, 'favicon.ico');
+      let data;
       try {
-        const data = await fs.readFile(faviconPath);
-        res.writeHead(200, { 'Content-Type': 'image/x-icon' });
-        res.end(data);
+        data = await fs.readFile(faviconPath+"s");
       } catch (err) {
-        console.error(err);
-        // Peticion raiz
-        // Estableciendo cabeceras
-        res.setHeader('Content-Type', 'text/html');
-        // Escribiendo la respuesta
-        res.write(`
-        <html>
-          <head>
-            <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
-            <title>My App</title>
-          </head>
-          <body> 
-            <h1>&#128534; 500 El server esta fuera de servicio</h1>
-            <p>Lo sentimos pero hubo un error en nuestro server...</p>
-            <p> ${err.message}</p>
-          </body>
-        </html>
-        `);
-        console.log(`📣 Respondiendo: 500 ${req.url} ${req.method}`);
-        // Estableciendo codigo de respuesta
-        res.statusCode = 500;
-        // Cerrando la comunicacion
-        res.end();
+        return error500(err, serveView, view);
       }
+      res.writeHead(200, { 'Content-Type': 'image/x-icon' });
+      res.end(data);
       break;
     case "/message":
       // Verificando si es post
@@ -169,36 +94,18 @@ const requestHandler = async (req, res) => {
         // Se finaliza la conexion
         return res.end();
       } else {
-        res.statusCode = 404;
-        res.write("📣 404: Endpoint no encontrado")
-        res.end();
+        // Obteniendo la vista
+        view = views['404.html'];
+        // Sirviendo la vista
+        serveView(view, 404);
       }
       break;
     // Continua con el defautl
     default:
-      // Peticion raiz
-      // Estableciendo cabeceras
-      res.setHeader('Content-Type', 'text/html');
-      // Escribiendo la respuesta
-      res.write(`
-      <html>
-        <head>
-          <link rel="icon" type="image/x-icon" sizes="32x32" href="/favicon.ico">
-          <title>My App</title>
-        </head>
-        <body> 
-          <h1>&#128534; 404 Recurso no encontrado</h1>
-          <p>Lo sentimos pero no tenemos lo que buscas...</p>
-        </body>
-      </html>
-      `);
-      console.log(`📣 Respondiendo: 404 ${req.url} ${req.method}`);
-      // Estableciendo codigo de respuesta
-      res.statusCode = 404;
-      // Cerrando la comunicacion
-      res.end();
+      // Obteniendo la vista
+      view = views['404.html'];
+      // Sirviendo la vista
+      serveView(view, 404);
       break;
   }
 };
-
-export default { requestHandler };
