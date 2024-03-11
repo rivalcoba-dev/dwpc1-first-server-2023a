@@ -11,12 +11,13 @@ global["__filename"] = path.basename(new URL(import.meta.url).pathname);
 const server = http.createServer( (req, res)=>{
     // Codigo de comportamiento
     console.log("> 📢 Se ha recibido una petición");
-    console.log(`> 📢 dirname ${__dirname}`);
-    console.log(`> 📢 filename ${__filename}`);
+    console.log(`📢 Client-Request: ${req.method} ${req.url}`);
     // Respondiendo al cliente
     res.write("Hola desde el server...");
     // Terminando la conexion
     res.end();
+    // Terminado el servidor
+    process.exit();
 } );
 
 // 3. Poner a trabajar el servidor
