@@ -1,0 +1,26 @@
+{
+  "name": "dwpc1-first-server-2023a",
+  "version": "0.0.0",
+  "description": "Nuestro primer servidor con Node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rivalcoba-dev/dwpc1-first-server-2023a.git#class-2024A"
+  },
+  "keywords": [
+    "Node",
+    "express",
+    "Fullstack",
+    "Web",
+    "Developer"
+  ],
+  "author": "@rivalcoba",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rivalcoba-dev/dwpc1-first-server-2023a/issues"
+  },
+  "homepage": "https://github.com/rivalcoba-dev/dwpc1-first-server-2023a/tree/class-2024A#readme"
+}
