@@ -12,12 +12,24 @@ const server = http.createServer( (req, res)=>{
     // Codigo de comportamiento
     console.log("> 📢 Se ha recibido una petición");
     console.log(`📢 Client-Request: ${req.method} ${req.url}`);
+    // Estableciendo cabeceras
+    res.setHeader('Content-Type','text/html');
     // Respondiendo al cliente
-    res.write("Hola desde el server...");
+    res.write(`
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>My primer back-end</title>
+        </head>
+        <body>
+            <h1>Mi primer back-end</h1>
+        </body>
+    </html>
+    `);
     // Terminando la conexion
     res.end();
-    // Terminado el servidor
-    process.exit();
 } );
 
 // 3. Poner a trabajar el servidor
