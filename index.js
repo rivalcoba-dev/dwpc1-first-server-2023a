@@ -1,12 +1,18 @@
 // 1. Importar el modulo http
-import { log } from 'console';
-import http from 'http'
+import http from 'http';
+import path from 'path';
+
+global["__dirname"] = path.dirname(new URL(import.meta.url).pathname);
+global["__filename"] = path.basename(new URL(import.meta.url).pathname);
+
 
 // 2. Creando el servidor y su logica
 // callback => Funcion
 const server = http.createServer( (req, res)=>{
     // Codigo de comportamiento
     console.log("> 📢 Se ha recibido una petición");
+    console.log(`> 📢 dirname ${__dirname}`);
+    console.log(`> 📢 filename ${__filename}`);
     // Respondiendo al cliente
     res.write("Hola desde el server...");
     // Terminando la conexion
